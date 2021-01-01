@@ -36,30 +36,35 @@ def get_gpa_scale():
             print("Please enter a valid option.")
 
 
-def get_course_info():
+def add_course(gpa_scale):
+
+    course_info = []
+    course_name = input("Enter the course name or code: ")
+    course_grade = input("Enter your GPA in the course (gpa or letter grade): ")
+    course_weight = input("Enter the GPA weight of the course: ")
+
+    if not course_grade.replace(".", "").isdigit():
+        course_grade = gpa_scale[course_grade]
+
+    course_info.append(course_name)
+    course_info.append(course_grade)
+    course_info.append(course_weight)
+
+    print()
+
+    return course_info
+
+
+def get_course_info(gpa_scale):
     gpa_list = []
     all_gpa_entered = False
-    course_info = []
-
-    gpa_scale = get_gpa_scale()
 
     print("Enter all courses you want to include in you GPA calculation with their corresponding grades.\n")
 
     while not all_gpa_entered:
-        course_name = input("Enter the course name or code: ")
-        course_grade = input("Enter your GPA in the course (gpa or letter grade): ")
-        course_weight = input("Enter the GPA weight of the course: ")
 
-        if not course_grade.isdigit():
-            course_grade = gpa_scale[course_grade]
-
-        course_info.append(course_name)
-        course_info.append(course_grade)
-        course_info.append(course_weight)
-
+        course_info = add_course(gpa_scale)
         gpa_list.append(course_info)
-
-        course_info = []
 
         valid_input = False
 
@@ -77,3 +82,41 @@ def get_course_info():
                 print("Please enter a valid input [y/n]")
 
     return gpa_list
+
+
+def remove_course(course_list):
+
+    # if course list is empty
+    if not course_list:
+        print("Your course list is already empty, please add some courses.\n")
+        return course_list
+
+    print("Here are the courses that you already entered:\n")
+    print_courses(course_list)
+    delete_course = input("Enter the name of the course you want to remove: ")
+
+    course_found = False
+    for i in range(0, len(course_list)):
+        if course_list[i][0].lower() == delete_course.lower():
+            del course_list[i]
+            course_found = True
+            print(delete_course, "was removed from the course list")
+            break
+
+    if not course_found:
+        print(delete_course + " was not found in your course list\n")
+
+    return course_list
+
+
+def print_courses(course_list):
+
+    # if course list is empty
+    if not course_list:
+        print("Your course list is already empty, please add some courses.\n")
+        return
+
+    for course in course_list:
+        print(str(course[0]) + ": GPA = " + str(course[1]) + ", weight = " + str(course[2]))
+
+    print()
